@@ -1,6 +1,6 @@
 import requests, re
 
-def validate_binance_keys(api_key, secret_key):
+def validate_binance_keys(api_key):
     url = 'https://api.binance.com/api/v3/account'
     headers = {
         'X-MBX-APIKEY': api_key

@@ -6,6 +6,8 @@ from .models import User
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
+from .utils.helper import validate_binance_keys
+
 
 class RegistrationForm(UserCreationForm):
   password1 = forms.CharField(
@@ -43,3 +45,26 @@ class RegistrationForm(UserCreationForm):
           'placeholder': 'Telegram Id'
       })
     }
+
+
+class AddBinanceKeyForm(forms.ModelForm):
+    def clean_binance_key(self):
+        binance_key = self.cleaned_data['binance_key']
+        if not validate_binance_keys(binance_key):
+            raise ValidationError(_("Please Enter a valid Binance API Key"))
+        return binance_key
+
+    class Meta:
+        model = User
+        fields = ('binance_key', 'secret_key')
+
+        widgets = {
+            'binance_key': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Binance API Key'
+            }),
+            'secret_key': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Secret Key'
+            })
+        }
