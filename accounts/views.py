@@ -3,6 +3,7 @@ import base64, os, re
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
@@ -69,6 +70,57 @@ def add_binance_key(request):
     context = { 'form': form, 'title': 'Configure' }
     return render(request, 'accounts/add_binance_key.html', context)
 
+
+def user_profile(request):
+  user = request.user
+
+  if not user.is_authenticated:
+    return redirect('accounts/login')
+  
+  if request.method == 'POST':
+    #update the user-profile
+    if request.POST.get('fname'):
+        user.first_name = request.POST['fname']
+    if request.POST.get('lname'):
+        user.last_name = request.POST['lname']
+    if request.POST.get('nick_name'):
+        user.nick_name = request.POST['nick_name']
+    if request.POST.get('kyc_name'):
+        user.kyc_full_name = request.POST['kyc_name']
+    if request.POST.get('mobile'):
+        user.mobile_no = request.POST['mobile']
+    if request.POST.get('country'):
+        user.country = request.POST['country']
+    if request.POST.get('zip_code'):
+        user.zip_code = request.POST['zip_code']
+
+    binance_key = request.POST.get('binance_key')
+    api_secret = request.POST.get('api_secret')
+    if binance_key and api_secret:
+      binance_key_data = {
+         "binance_key": binance_key,
+         "secret_key": api_secret
+      }
+
+      form = AddBinanceKeyForm(binance_key_data, instance=user)
+      if form.is_valid():
+        form.save()
+      else:
+          messages.error(request, "Please provide a valid binance key!")
+          return JsonResponse({
+            'success': False,
+            'status': 400
+          })
+        
+    user.save()
+    messages.success(request, "User updated Successfully!")
+    return JsonResponse({
+        'success': True,
+        'status': 200
+    })
+
+     
+  return render(request, 'pages/profile.html', { 'segment': 'profile' })
 
 # @login_required
 # def profile_view(request):
