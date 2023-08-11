@@ -106,20 +106,25 @@ def user_profile(request):
       if form.is_valid():
         form.save()
       else:
-          messages.error(request, "Please provide a valid binance key!")
+          messages.error(request, "Error: Please provide a valid binance key!")
           return JsonResponse({
             'success': False,
             'status': 400
           })
+    elif binance_key or api_secret:
+        messages.error(request, "Error: Please provide binance key and api_secret both!")
+        return JsonResponse({
+          'success': False,
+          'status': 400
+        })
         
     user.save()
-    messages.success(request, "User updated Successfully!")
+    messages.success(request, "Success : User updated Successfully!")
     return JsonResponse({
         'success': True,
         'status': 200
     })
-
-     
+   
   return render(request, 'pages/profile.html', { 'segment': 'profile' })
 
 # @login_required
