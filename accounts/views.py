@@ -80,44 +80,22 @@ def user_profile(request):
   if request.method == 'POST':
     #update the user-profile
     if request.POST.get('fname'):
-        user.first_name = request.POST['fname']
+      user.first_name = request.POST['fname']
     if request.POST.get('lname'):
-        user.last_name = request.POST['lname']
+      user.last_name = request.POST['lname']
     if request.POST.get('nick_name'):
-        user.nick_name = request.POST['nick_name']
+      user.nick_name = request.POST['nick_name']
     if request.POST.get('kyc_name'):
-        user.kyc_full_name = request.POST['kyc_name']
+      user.kyc_full_name = request.POST['kyc_name']
     if request.POST.get('mobile'):
-        user.mobile_no = request.POST['mobile']
+      user.mobile_no = request.POST['mobile']
     if request.POST.get('country'):
-        user.country = request.POST['country']
+      user.country = request.POST['country']
     if request.POST.get('zip_code'):
-        user.zip_code = request.POST['zip_code']
-
-    binance_key = request.POST.get('binance_key')
-    api_secret = request.POST.get('api_secret')
-    if binance_key and api_secret:
-      binance_key_data = {
-         "binance_key": binance_key,
-         "secret_key": api_secret
-      }
-
-      form = AddBinanceKeyForm(binance_key_data, instance=user)
-      if form.is_valid():
-        form.save()
-      else:
-          messages.error(request, "Error: Please provide a valid binance key!")
-          return JsonResponse({
-            'success': False,
-            'status': 400
-          })
-    elif binance_key or api_secret:
-        messages.error(request, "Error: Please provide binance key and api_secret both!")
-        return JsonResponse({
-          'success': False,
-          'status': 400
-        })
-        
+      user.zip_code = request.POST['zip_code']
+    if request.POST.get('telegram_user'):
+      user.telegram_id = request.POST['telegram_user']
+       
     user.save()
     messages.success(request, "Success : User updated Successfully!")
     return JsonResponse({
@@ -126,6 +104,31 @@ def user_profile(request):
     })
    
   return render(request, 'pages/profile.html', { 'segment': 'profile' })
+
+
+@login_required
+def api_management(request):
+  user = request.user
+
+  if not user.is_authenticated:
+    return redirect('accounts/login')
+  
+  if request.method == 'POST':
+    form = AddBinanceKeyForm(request.POST, instance=request.user)
+    if form.is_valid():
+      form.save()
+      messages.success(request, "Success : Binance Key updated Successfully!")
+      return redirect('api_management')
+    else:
+      messages.error(request, "Error: Please provide a valid binance key!")
+      return redirect('api_management')
+    
+  initial_data = {
+    'binance_key': user.binance_key,
+    'secret_key': user.secret_key,
+  }
+  form = AddBinanceKeyForm(initial=initial_data)
+  return render(request, 'pages/api_manage.html', {'form': form})
 
 # @login_required
 # def profile_view(request):

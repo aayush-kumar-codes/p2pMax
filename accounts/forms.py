@@ -48,11 +48,11 @@ class RegistrationForm(UserCreationForm):
 
 
 class AddBinanceKeyForm(forms.ModelForm):
-    def clean_binance_key(self):
-        binance_key = self.cleaned_data['binance_key']
-        if not validate_binance_keys(binance_key):
-            raise ValidationError(_("Please Enter a valid Binance API Key"))
-        return binance_key
+    #def clean_binance_key(self):
+    #    binance_key = self.cleaned_data['binance_key']
+    #    if not validate_binance_keys(binance_key):
+    #        raise ValidationError(_("Please Enter a valid Binance API Key"))
+    #    return binance_key
 
     class Meta:
         model = User
