@@ -221,7 +221,7 @@
           document.getElementById('saveProfileBtn').addEventListener('click', function() {
               const formData = new FormData(document.querySelector('#user-profile-form'));
 
-              fetch('/profile/', {
+              fetch('/accounts/profile/', {
                   method: 'POST',
                   body: formData,
                   headers: {
@@ -230,7 +230,7 @@
               })
               .then(response => response.json())
               .then(data => {
-                window.location.href = '/profile/';
+                window.location.href = '/accounts/profile/';
               })
               .catch(error => {
                   console.error('Error:', error);

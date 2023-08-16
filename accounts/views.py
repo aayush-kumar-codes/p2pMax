@@ -26,7 +26,12 @@ from .decorator import login_required
 
 @login_required
 def index(request):
-  return render(request, 'pages/index.html', { 'segment': 'index', 'title': 'Dashboard' })
+  if request.user.role == 'admin':
+    users_count = User.objects.filter(is_active=True).count()
+    users = User.objects.all()
+    data = { 'segment': 'index', 'title': 'Dashboard', 'active_users': users_count, 'users': users }
+    return render(request, 'pages/index.html', data)
+  return render(request, 'pages/home.html', { 'segment': 'index', 'title': 'Dashboard'})
 
 class CustomUserLoginView(UserLoginView):
     template_name = 'accounts/login.html'
@@ -55,27 +60,9 @@ def register(request):
   context = { 'form': form, 'title': 'Register' }
   return render(request, 'accounts/register.html', context)
 
-
-def add_binance_key(request):
-    if not request.user.is_authenticated:
-        return redirect('accounts/login')
-    if request.method == 'POST':
-        form = AddBinanceKeyForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('/')
-    else:
-       form = AddBinanceKeyForm()
-    
-    context = { 'form': form, 'title': 'Configure' }
-    return render(request, 'accounts/add_binance_key.html', context)
-
-
+@login_required
 def user_profile(request):
   user = request.user
-
-  if not user.is_authenticated:
-    return redirect('accounts/login')
   
   if request.method == 'POST':
     #update the user-profile
@@ -103,21 +90,32 @@ def user_profile(request):
         'status': 200
     })
    
-  return render(request, 'pages/profile.html', { 'segment': 'profile' })
+  return render(request, 'accounts/profile.html', { 'segment': 'profile' })
 
+
+#def add_binance_key(request):
+#  if not request.user.is_authenticated:
+#    return redirect('accounts/login')
+#  if request.method == 'POST':
+#    form = AddBinanceKeyForm(request.POST, instance=request.user)
+#    if form.is_valid():
+#      form.save()
+#      return redirect('/')
+#  else:
+#    form = AddBinanceKeyForm()
+#  
+#  context = { 'form': form, 'title': 'Configure' }
+#  return render(request, 'accounts/add_binance_key.html', context)
 
 @login_required
 def api_management(request):
   user = request.user
-
-  if not user.is_authenticated:
-    return redirect('accounts/login')
   
   if request.method == 'POST':
     form = AddBinanceKeyForm(request.POST, instance=request.user)
     if form.is_valid():
       form.save()
-      messages.success(request, "Success : Binance Key updated Successfully!")
+      messages.success(request, "Success : Binance Key added Successfully!")
       return redirect('api_management')
     else:
       messages.error(request, "Error: Please provide a valid binance key!")
@@ -128,7 +126,7 @@ def api_management(request):
     'secret_key': user.secret_key,
   }
   form = AddBinanceKeyForm(initial=initial_data)
-  return render(request, 'pages/api_manage.html', {'form': form})
+  return render(request, 'accounts/api_manage.html', {'form': form})
 
 # @login_required
 # def profile_view(request):

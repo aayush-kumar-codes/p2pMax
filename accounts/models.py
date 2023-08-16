@@ -7,7 +7,12 @@ from .managers import UserManager
 
 
 class User(AbstractUser):
-
+    ROLE_CHOICES = (
+        ('user', 'User'),
+        ('admin', 'Admin'),
+    )
+    
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
     email = models.EmailField(('email_address'), unique=True, max_length=200)
     username = models.CharField(max_length=200, null=True, blank=True)
     first_name = models.CharField(max_length=100, blank=True)
