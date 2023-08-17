@@ -4,7 +4,14 @@
 {% block title %} Home {% endblock title %}
 
 {% block content %}
-
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %} d-flex justify-content-between align-items-center" role="alert">
+         <div class="mx-auto">
+             <strong style="color: white;">{{ message }}</strong>
+         </div>
+         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
@@ -103,11 +110,78 @@
           </div>
         </div>
       </div>
+      <div class="row mt-4 text-center bg-gradient-secondary text-white" style="margin-right: 5px; margin-left: 5px; border-radius: 10px;">
+        <h2>User Management</h2>
+      </div>
       <div class="row mt-4">
         <div class="col">
-          <h4>User Management</h4>
           <div class="container-fluid py-4">
             <div class="row">
+              <div class="col-12">
+                <div class="card my-4">
+                  <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                      <h6 class="text-white text-capitalize ps-3">ADD USER</h6>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <form role="form" method="post" action="">
+                      {% csrf_token %} 
+                      {% for field in form %}
+                      <div class="input-group input-group-outline mb-3">
+                        {{ field }}
+                      </div>
+                      <span class="text-danger">{{ field.errors }}</span>
+                      {% endfor %}
+                      <div class="text-center">
+                        <button type="submit" name="register" 
+                                class="btn btn-lg bg-primary text-white btn-lg w-100">ADD</button>
+                      </div>         
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-12">
+                <div class="card my-4">
+                  <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                      <h6 class="text-white text-capitalize ps-3">PACKAGE EXPIRING USER</h6>
+                    </div>
+                  </div>
+                  <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                      <table class="table align-items-center mb-0">
+                        <thead>
+                          <tr>
+                            <th class="text-uppercase text-dark text-xxs font-weight-bolder text-center">User ID</th>
+                            <th class="text-uppercase text-dark text-xxs font-weight-bolder text-center">Name</th>
+                            <th class="text-uppercase text-dark text-xxs font-weight-bolder text-center">Email</th>
+                            <th class="text-uppercase text-dark text-xxs font-weight-bolder text-center">Username</th>
+                            <th class="text-uppercase text-dark text-xxs font-weight-bolder text-center">Binance Id</th>
+                            <th class="text-uppercase text-dark text-xxs font-weight-bolder text-center">Subscription</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                          <tr>
+                            <td class="text-center text-secondary text-xs font-weight-bold">{{ user.id }}</td>
+                            <td class="text-center text-secondary text-xs font-weight-bold">{{ user.first_name }} {{ user.last_name }}</td>
+                            <td class="text-center text-secondary text-xs font-weight-bold">{{ user.email }}</td>
+                            <td class="text-center text-secondary text-xs font-weight-bold">{{ user.username }}</td>
+                            <td class="text-center text-secondary text-xs font-weight-bold">{{ user.binance_key }}</td>
+                            <td class="text-center text-secondary text-xs font-weight-bold">Premium</td>
+                          </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
               <div class="col-12">
                 <div class="card my-4">
                   <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -132,7 +206,7 @@
                         {% for user in users %}
                           <tr>
                             <td class="text-center text-secondary text-xs font-weight-bold">{{ user.id }}</td>
-                            <td class="text-center text-secondary text-xs font-weight-bold">{{ request.user.last_name }}</td>
+                            <td class="text-center text-secondary text-xs font-weight-bold">{{ user.first_name }} {{ user.last_name }}</td>
                             <td class="text-center text-secondary text-xs font-weight-bold">{{ user.email }}</td>
                             <td class="text-center text-secondary text-xs font-weight-bold">{{ user.username }}</td>
                             <td class="text-center text-secondary text-xs font-weight-bold">{{ user.binance_key }}</td>
@@ -141,17 +215,6 @@
                         {% endfor %}
                         </tbody>
                       </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12">
-                <div class="card my-4">
-                  <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                      <h6 class="text-white text-capitalize ps-3">ADD USER</h6>
                     </div>
                   </div>
                 </div>

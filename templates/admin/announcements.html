@@ -1,0 +1,23 @@
+{% extends 'layouts/base.html' %}
+{% load i18n static %}
+
+{% block title %} Announcements {% endblock title %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="m-0">Announcements</h2>
+                </div>
+                <div class="card-body">
+                    <h4 class="alert-heading">Important Update!</h4>
+                    <p class="mb-0">Posted on: August 17, 2023</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'includes/footer.html' %}
+{% endblock %}

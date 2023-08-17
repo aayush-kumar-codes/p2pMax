@@ -147,6 +147,9 @@
                                       <input type="text" class="form-control" id="last" name="lname" placeholder="Last Name">
                                     </div>
                                     <div class="mb-3">
+                                      <input type="text" class="form-control" id="userName" name="user_name" placeholder="Username">
+                                    </div>
+                                    <div class="mb-3">
                                       <input type="text" class="form-control" id="nickName" name="nick_name" placeholder="Nick Name">
                                     </div>
                                     <div class="mb-3">
@@ -179,6 +182,7 @@
                   <p id="bioParagraph" class="text-sm"></p>
                   <ul class="list-group">
                     <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Full Name:</strong> &nbsp; {{ request.user.first_name }} {{ request.user.last_name }}</li>
+                    <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Username:</strong> &nbsp; {{ request.user.username }}</li>
                     <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Nick Name:</strong> &nbsp; {{ request.user.nick_name }}</li>
                     <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">KYC Full Name:</strong> &nbsp; {{ request.user.kyc_full_name }}</li>
                     <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Email:</strong> &nbsp; {{ request.user.email }}</li>

@@ -29,9 +29,40 @@ def index(request):
   if request.user.role == 'admin':
     users_count = User.objects.filter(is_active=True).count()
     users = User.objects.all()
-    data = { 'segment': 'index', 'title': 'Dashboard', 'active_users': users_count, 'users': users }
+    form = RegistrationForm()
+    data = { 
+      'segment': 'index',
+      'title': 'Dashboard',
+      'active_users': users_count,
+      'users': users,
+      'form': form
+    }
+    if request.method == 'POST':
+      form = RegistrationForm(request.POST)
+      if form.is_valid():
+        form.save()
+        messages.success(request, 'Success: User Added successfully!')
+      else:
+        _, first_errors = next(iter(form.errors.items()))
+        error_message = ', '.join(first_errors)
+        messages.error(request, f"Error: {error_message}!")
+      return redirect('/')
+
     return render(request, 'pages/index.html', data)
   return render(request, 'pages/home.html', { 'segment': 'index', 'title': 'Dashboard'})
+
+
+def system_settings(request):
+  return render(request, 'admin/system_settings.html')
+
+
+def support_tickets(request):
+  return render(request, 'admin/support_tickets.html')
+
+
+def announcements(request):
+  return render(request, 'admin/announcements.html')
+
 
 class CustomUserLoginView(UserLoginView):
     template_name = 'accounts/login.html'
@@ -70,6 +101,8 @@ def user_profile(request):
       user.first_name = request.POST['fname']
     if request.POST.get('lname'):
       user.last_name = request.POST['lname']
+    if request.POST.get('user_name'):
+      user.username = request.POST['user_name']
     if request.POST.get('nick_name'):
       user.nick_name = request.POST['nick_name']
     if request.POST.get('kyc_name'):
